@@ -7,18 +7,19 @@
         </span>
         <span class="heading h2 light-text--text">
           <cc-slashes />
+          {{ npc.Side }}
           {{ typeof npc.Tier === 'number' ? `T${npc.Tier}` : `Custom` }} {{ npc.Class.Name }}
           {{ npc.Templates.map(t => t.Name).join(' ') }} {{ npc.Tag }}
         </span>
       </v-col>
     </v-row>
 
-    <v-alert v-if="npc.Destroyed" prominent color="error" dark border="left" icon="mdi-skull">
-      <span class="heading h2">NPC DESTROYED</span>
+    <v-alert v-if="npc.Defeat" prominent color="error" dark border="left" icon="mdi-skull">
+      <span class="heading h2">NPC {{ npc.Defeat }}</span>
     </v-alert>
 
     <v-alert
-      v-if="npc.Activations === 0 && !npc.Destroyed"
+      v-if="npc.Activations === 0 && !npc.Defeat"
       prominent
       dark
       dense
@@ -219,6 +220,13 @@
         </v-card>
       </v-col>
     </v-row>
+    <div class="overline">FEATURES</div>
+    <v-row dense>
+      <v-col v-for="(i, idx) in npc.Items" :key="i.Feature.ID + idx" cols="6">
+        <cc-npc-item-card :item="i" active @add-reaction="npc.AddReaction($event)" />
+      </v-col>
+    </v-row>
+    <v-divider class="my-3" />
     <v-row dense>
       <v-textarea
         v-model="npc.Note"
@@ -230,12 +238,29 @@
         hide-actions
       />
     </v-row>
-    <v-row dense justify="center">
-      <v-col v-if="!npc.Destroyed" cols="8">
+    <v-row v-if="npc.Reactions.length" dense justify="center">
+      <v-col cols="10">
+        <div class="overline">STAGED REACTIONS</div>
+        <v-chip
+          v-for="(r, i) in npc.Reactions"
+          :key="r + i"
+          dark
+          color="action--reaction"
+          close
+          close-icon="mdi-close"
+          class="mx-1"
+          @click:close="npc.RemoveReaction(r)"
+        >
+          <v-icon left dark>mdi-redo-variant</v-icon>
+          <span class="heading h3">{{ r }}</span>
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-row dense justify="start" class="mt-3 mb-10">
+      <v-col v-if="!npc.Defeat">
         <v-btn
           block
-          outlined
-          large
+          x-large
           color="secondary"
           :disabled="npc.Activations === 0"
           @click="npc.Activations -= 1"
@@ -256,9 +281,6 @@
           </v-btn>
         </v-slide-y-transition>
       </v-col>
-      <v-col cols="auto" class="ml-2">
-        options menu
-      </v-col>
     </v-row>
     <cc-ref-stress-table ref="stressTable" />
     <cc-ref-structure-table ref="structureTable" />
@@ -276,6 +298,9 @@ export default Vue.extend({
     npc: {
       type: Object,
       required: true,
+    },
+    defeated: {
+      type: Boolean,
     },
   },
   data: () => ({

@@ -4,7 +4,7 @@
       <div slot="header">
         <span v-if="item">
           <equipment-options :item="item" />
-          <span v-if="!item.Destroyed" class="ml-n2">{{ item.Size }} {{ item.Type }}</span>
+          <span v-if="!item.Destroyed" class="ml-n2">{{ item.Name }}</span>
           <span v-else class="py-1 error" style="letter-spacing: 3px">
             &emsp;/ / EQUIPMENT DESTROYED / /&emsp;
           </span>
@@ -12,12 +12,13 @@
         <span v-else>{{ weaponSlot.Size }} Weapon</span>
       </div>
       <div v-if="!readonly" slot="header-items" class="text-right">
-        <v-btn v-if="item" icon dark @click="remove()">
-          <v-icon class="fadeSelect">delete</v-icon>
-        </v-btn>
-        <v-btn icon dark @click="$refs.base.$refs.selectorDialog.show()">
-          <v-icon class="fadeSelect" v-html="item ? 'mdi-swap-vertical-variant' : 'add'" />
-        </v-btn>
+        <v-icon v-if="item" class="fadeSelect mt-n1" dark @click.stop="remove()">delete</v-icon>
+        <v-icon
+          class="fadeSelect mt-n1"
+          dark
+          @click.stop="$refs.base.$refs.selectorDialog.show()"
+          v-html="item ? 'mdi-swap-vertical-variant' : 'add'"
+        />
       </div>
       <div v-if="item">
         <equipment-header :item="item" :color="color">
@@ -34,7 +35,7 @@
           </div>
         </equipment-header>
         <v-row v-if="item.Effect">
-          <p class="flavor-text px-2 mx-2 py-0 mb-1" v-html="item.Effect" />
+          <p class="effect-text px-2 mx-2 py-0 mb-1" v-html="item.Effect" />
         </v-row>
         <v-row v-if="item.Mod" dense justify="center">
           <mod-inset :mod="item.Mod" @remove-mod="item.Mod = null" />

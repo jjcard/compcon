@@ -54,7 +54,14 @@
       </v-col>
     </v-row>
 
-    <v-alert v-if="mech.Activations === 0 && !mech.Destroyed" prominent dark dense border="left" icon="mdi-check">
+    <v-alert
+      v-if="mech.Activations === 0 && !mech.Defeat"
+      prominent
+      dark
+      dense
+      border="left"
+      icon="mdi-check"
+    >
       <span class="heading h2">Turn Complete</span>
     </v-alert>
 
@@ -333,7 +340,11 @@
     </v-row>
     <div class="overline">LOADOUT</div>
     <v-row dense>
-      <player-equipment-item v-for="(i, idx) in mech.ActiveLoadout.Equipment" :key="i.ID + idx" :item="i" />
+      <player-equipment-item
+        v-for="(i, idx) in mech.ActiveLoadout.Equipment"
+        :key="i.ID + idx"
+        :item="i"
+      />
     </v-row>
     <v-divider class="my-2" />
     <v-row dense>
@@ -347,12 +358,29 @@
         hide-actions
       />
     </v-row>
-    <v-row dense justify="center">
-      <v-col v-if="!mech.Destroyed" cols="8">
+    <v-row v-if="mech.Reactions.length && !rest" dense justify="center">
+      <v-col cols="10">
+        <div class="overline">STAGED REACTIONS</div>
+        <v-chip
+          v-for="(r, i) in mech.Reactions"
+          :key="r + i"
+          dark
+          color="action--reaction"
+          close
+          close-icon="mdi-close"
+          class="mx-1"
+          @click:close="mech.RemoveReaction(r)"
+        >
+          <v-icon left dark>mdi-redo-variant</v-icon>
+          <span class="heading h3">{{ r }}</span>
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-row v-if="!rest" dense justify="start" class="mb-10">
+      <v-col v-if="!mech.Defeat">
         <v-btn
           block
-          outlined
-          large
+          x-large
           color="secondary"
           :disabled="mech.Activations === 0"
           @click="mech.Activations = 0"
@@ -373,10 +401,8 @@
           </v-btn>
         </v-slide-y-transition>
       </v-col>
-      <v-col cols="auto" class="ml-2">
-        options menu
-      </v-col>
     </v-row>
+    <div v-if="rest" style="height: 30px" />
     <cc-stress-table ref="stressTable" :mech="mech" />
     <cc-structure-table ref="structureTable" :mech="mech" />
   </div>
@@ -396,6 +422,9 @@ export default Vue.extend({
       type: Object,
       required: true,
     },
+    rest: {
+      type: Boolean
+    }
   },
   data: () => ({
     overcharge: [' +1 ', ' +1d3 ', ' +1d6 ', '+1d6+4'],

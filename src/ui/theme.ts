@@ -1,8 +1,5 @@
-import { VuetifyPreset } from "vuetify/types/presets";
-
-
 const themeDefaults = {
-  primary: '#b30c1d',
+  primary: '#991E2A',
   active: '#d93f4e',
   secondary: '#283593',
   pilot: '#424242',
@@ -13,7 +10,8 @@ const themeDefaults = {
   warning: '#FFAB00',
   text: '#212121',
   'light-text': '#424242',
-  panel: '#ededed',
+  panel: '#ccc',
+  'light-panel': '#dbdbdb',
   'panel-border': '#8a949e',
   frame: '#673AB7',
   weapon: '#212121',
@@ -77,18 +75,9 @@ const themeDefaults = {
   enemy: '#C62828',
   ally: '#1661b8',
   neutral: '#455A64',
-
-  'faction--gms': '#b30c1d',
-  'faction--ips-n': '#1661b8',
-  'faction--ssc': '#ffbb61',
-  'faction--ha': '#6e4373',
-  'faction--horus': '#00a256',
-
-  template: '#ad8951',
 }
 
-
-const theme: Partial<VuetifyPreset> = {
+const theme: any = {
   icons: {
     iconfont: 'mdi',
     values: {
@@ -108,20 +97,20 @@ const theme: Partial<VuetifyPreset> = {
     themes: {
       light: {
         ...themeDefaults,
-        background: '#ffffff',
+        background: '#EDEDED',
 
         'stark-panel': '#fff',
         'stark-text': '#000',
       },
       dark: {
         ...themeDefaults,
-        
+
         'light-text': '#E0E0E0',
 
         background: '#202020',
         panel: {
           base: '#202020',
-          darken1: '#191919'
+          darken1: '#191919',
         },
         text: '#EEEEEE',
 
@@ -133,7 +122,6 @@ const theme: Partial<VuetifyPreset> = {
         weapon: '#2f2f2f',
 
         'action--downtime': '#586a73',
-
       },
     },
   },

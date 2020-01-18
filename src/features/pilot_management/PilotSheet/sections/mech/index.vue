@@ -3,7 +3,7 @@
     <header-overlay :mech="mech" />
     <mech-nav :selected="0" :pilot="pilot" :mech="mech" @delete="$refs.deleteDialog.show()" />
     <v-row no-gutters>
-      <v-col cols="auto">
+      <v-col cols="auto" class="mt-4">
         <cc-title large :color="color">{{ mech.Name }}&emsp;</cc-title>
         <cc-logo size="large" :source="mech.Frame.Manufacturer" />
         <span class="heading h2" style="position: relative; top: -11px">
@@ -24,7 +24,7 @@
           </cc-solo-dialog>
         </span>
       </v-col>
-      <v-col cols="auto" class="ml-2">
+      <v-col cols="auto" class="ml-auto mt-4">
         <cc-tooltip v-if="!mech.IsActive" simple content="Set as Active">
           <v-btn icon @click.stop="pilot.ActiveMech = mech">
             <v-icon x-large>cci-activate</v-icon>
@@ -42,9 +42,11 @@
     />
     <v-row align="center">
       <v-col cols="8">
-        <v-row>
+        <v-row class="px-3">
           <v-col>
-            <cc-title small :color="color">Operator Notes</cc-title>
+            <div class="ml-n3">
+              <cc-title small :color="color" class="pl-3">Operator Notes</cc-title>
+            </div>
             <v-textarea
               v-model="mech.Notes"
               class="mt-2"
@@ -57,10 +59,10 @@
             />
           </v-col>
         </v-row>
-        <v-row>
+        <v-row class="px-3">
           <license-requirement-block :mech="mech" :color="color" />
         </v-row>
-        <v-row>
+        <v-row class="px-3">
           <trait-block :mech="mech" :color="color" />
         </v-row>
       </v-col>
@@ -92,7 +94,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="mt-n6 mb-2">
+    <v-row class="mt-n6 mb-2 px-3">
       <attributes-block :color="color" :mech="mech" :pilot="pilot" />
     </v-row>
     <cc-title small :color="color">
@@ -100,7 +102,7 @@
     </cc-title>
     <core-item :core-system="mech.Frame.CoreSystem" :color="color" />
     <cc-title small :color="color" class="mb-2">Equipment Loadout</cc-title>
-    <cc-mech-loadout :mech="mech" />
+    <cc-mech-loadout :mech="mech" class="px-3" />
     <delete-mech-dialog ref="deleteDialog" :mech="mech" @delete="deleteMech()" />
   </div>
 </template>
@@ -114,10 +116,7 @@ import LicenseRequirementBlock from './sections/license_requirements/index.vue'
 import TraitBlock from './sections/traits/index.vue'
 import AttributesBlock from './sections/attributes/index.vue'
 import DeleteMechDialog from '../hangar/components/DeleteMechDialog.vue'
-import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from '@/store'
-import Pilot from '../../../../../classes/pilot/Pilot'
-import Mech from '../../../../../classes/mech/Mech'
+import { Pilot, Mech } from '@/class'
 
 export default Vue.extend({
   name: 'mech-sheet',

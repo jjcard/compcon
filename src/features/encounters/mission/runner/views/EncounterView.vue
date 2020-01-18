@@ -1,11 +1,21 @@
 <template>
   <div>
-    <v-row dense style="height: calc(100vh - 185px); overflow-y: scroll">
+    <v-row id="scroll" dense style="height: calc(100vh - 185px); overflow-y: scroll">
       <v-col>
         <v-card flat outlined height="100%">
           <v-card-text>
-            <player-card v-if="selected && isPlayer(selected)" :mech="selected" />
-            <npc-card v-else-if="selected" :npc="selected" />
+            <player-card
+              v-if="selected && isPlayer(selected)"
+              :mech="selected"
+              @delete-actor="deleteActor()"
+            />
+            <npc-card v-else-if="selected" :npc="selected" @delete-actor="deleteActor()" />
+            <encounter-nav
+              v-if="selected"
+              :mission="activeMission"
+              :encounter="encounter"
+              :actor="selected"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -17,8 +27,8 @@
           <v-slide-group
             v-model="selectedActor"
             mandatory
-            active-class="success"
             show-arrows
+            center-active
             style="height: calc(100% - 8px)"
           >
             <div style="position: relative">
@@ -44,21 +54,21 @@
             </div>
             <slide-item v-for="a in finished" :key="a.ID" :actor="a" complete />
             <v-divider
-              v-if="destroyed.length"
+              v-if="defeated.length"
               vertical
               class="mx-4"
               style="border-color: darkgrey"
             />
             <div style="position: relative">
               <div
-                v-if="destroyed.length"
+                v-if="defeated.length"
                 class="overline font-weight-bold"
                 style="position: absolute; top: -2px"
               >
-                DESTROYED
+                DEFEATED
               </div>
             </div>
-            <slide-item v-for="a in destroyed" :key="a.ID" :actor="a" destroyed />
+            <slide-item v-for="a in defeated" :key="a.ID" :actor="a" defeated />
           </v-slide-group>
         </v-card>
       </v-col>
@@ -69,11 +79,28 @@
         </div>
         <v-btn block tile color="primary" @click="stageRoundEnd()">End Round</v-btn>
         <v-divider class="my-2" />
-        <v-btn block small color="primary" outlined>
-          Complete
-          <br />
-          Encounter
-        </v-btn>
+        <v-menu offset-x left>
+          <template v-slot:activator="{ on }">
+            <v-btn block small color="primary" outlined v-on="on">
+              Complete
+              <br />
+              Encounter
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text class="text-center font-weight-bold">
+              This will conclude the encounter and progress the mission. This can not be undone. Are
+              you sure you want to continue?
+              <v-divider class="my-2" />
+              <v-row dense>
+                <v-btn small text>CANCEL</v-btn>
+                <v-btn small color="primary" class="ml-auto" @click="$emit('finish')">
+                  CONFIRM
+                </v-btn>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
       </v-col>
     </v-row>
     <cc-solo-dialog ref="endConfirmDialog" title="Confirm End Round" @confirm="commitRoundEnd()">
@@ -94,10 +121,11 @@ import Vue from 'vue'
 import SlideItem from '../components/SlideItem.vue'
 import PlayerCard from '../components/PlayerCard.vue'
 import NpcCard from '../components/NpcCard.vue'
+import EncounterNav from '../components/EncounterNav.vue'
 
 export default Vue.extend({
   name: 'encounter-view',
-  components: { SlideItem, PlayerCard, NpcCard },
+  components: { SlideItem, PlayerCard, NpcCard, EncounterNav },
   props: {
     activeMission: {
       type: Object,
@@ -121,13 +149,18 @@ export default Vue.extend({
       return this.actors.find(x => x.ID === this.selectedActor)
     },
     initiative() {
-      return this.actors.filter(x => x.Activations > 0 && !x.Destroyed)
+      return this.actors.filter(x => x.Activations > 0 && !x.Defeat)
     },
     finished() {
-      return this.actors.filter(x => x.Activations === 0 && !x.Destroyed)
+      return this.actors.filter(x => x.Activations === 0 && !x.Defeat)
     },
-    destroyed() {
-      return this.actors.filter(x => x.Destroyed)
+    defeated() {
+      return this.actors.filter(x => x.Defeat)
+    },
+  },
+  watch: {
+    selectedActor() {
+      document.getElementById('scroll').scrollTop = 0
     },
   },
   methods: {
@@ -144,6 +177,15 @@ export default Vue.extend({
         a.NewTurn()
       })
       this.encounter.Round++
+    },
+    deleteActor() {
+      if (this.isPlayer(this.selected)) {
+        const idx = this.activeMission.Pilots.findIndex(x => x.ID === this.selected.ID)
+        if (idx > -1) this.activeMission.Pilots.splice(idx)
+      } else {
+        const idx = this.encounter.Npcs.findIndex(x => x.ID === this.selected.ID)
+        if (idx > -1) this.encounter.Npcs.splice(idx)
+      }
     },
   },
 })

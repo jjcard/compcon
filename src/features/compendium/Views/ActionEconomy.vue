@@ -7,7 +7,7 @@
         <v-card-text>
           <v-row justify="center" dense>
             <action-type-card action="move" />
-            <v-col cols="3" class="effect-text text-center">
+            <v-col cols="4" class="effect-text text-center">
               Full Action
               <i class="grey--text text--darken-1">or</i>
               2 Quick Actions
@@ -37,8 +37,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ActionTypeCard from '../UI/ActionTypeCard.vue'
-import ActionCard from '../UI/ActionCard.vue'
+import ActionTypeCard from '../components/ActionTypeCard.vue'
+import ActionCard from '../components/ActionCard.vue'
 import { actions } from 'lancer-data'
 
 export default Vue.extend({

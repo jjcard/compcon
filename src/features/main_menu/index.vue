@@ -6,7 +6,9 @@
     <v-container style="height: calc(100vh - 135px)">
       <v-row justify="space-between" style="height:100%">
         <main-btn :to="'/compendium'" @hover="ccLog('compendium')">Compendium</main-btn>
-        <main-btn :to="'/pilot_management'" @hover="ccLog('pilot')">Pilot Roster</main-btn>
+        <main-btn :to="'/pilot_management'" :loading="pilotLoading" @hover="ccLog('pilot')">
+          Pilot Roster
+        </main-btn>
         <main-btn :to="'/gm'" @hover="ccLog('gm')">Encounter Toolkit</main-btn>
         <main-btn disabled>Campaign Manager</main-btn>
         <main-btn disabled>Content Editor</main-btn>
@@ -45,7 +47,13 @@ export default Vue.extend({
     UpdateAlert,
     CCLog,
   },
-
+  data: () => ({
+    pilotLoading: false,
+  }),
+  beforeRouteLeave(to, from, next) {
+    if (to.path === '/pilot_management') this.pilotLoading = true
+    next()
+  },
   methods: {
     ccLog(btn: string) {
       switch (btn) {
@@ -82,7 +90,7 @@ export default Vue.extend({
         case 'update':
           this.$refs['log'].print(
             'gms-upm compcon changelog -l',
-            'View changelog and update COMP/CON'
+            'View COMP/CON changelog and latest updates'
           )
         default:
           break

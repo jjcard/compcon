@@ -15,10 +15,10 @@
       </div>
       <div v-if="!readonly" slot="header-items" class="text-right">
         <v-btn v-if="item" icon dark @click="remove(item)">
-          <v-icon class="fadeSelect">delete</v-icon>
+          <v-icon class="fadeSelect mt-n1">delete</v-icon>
         </v-btn>
         <v-btn icon dark @click="$refs.base.$refs.selectorDialog.show()">
-          <v-icon class="fadeSelect" v-html="item ? 'mdi-swap-vertical-variant' : 'add'" />
+          <v-icon class="fadeSelect mt-n1" v-html="item ? 'mdi-swap-vertical-variant' : 'add'" />
         </v-btn>
       </div>
       <div v-if="item">
@@ -35,7 +35,7 @@
         </v-alert>
         <v-row v-if="item.Effect" dense>
           <v-col class="mr-3">
-            <p class="flavor-text mb-0" v-html="item.Effect" />
+            <p class="effect-text mb-0" v-html="item.Effect" />
           </v-col>
           <v-col cols="auto" class="ml-auto mr-3">
             <span class="heading h2" :style="`color: ${color}`">{{ item.SP }}</span>

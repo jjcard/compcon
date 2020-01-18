@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import encounterRoutes from './features/encounters/routes'
+import { Capacitor } from '@capacitor/core'
 
 Vue.use(Router)
 
 export default new Router({
+  // TODO: put in a check for dev here so it doesn't break HMR
+  // mode: Capacitor.platform === 'web' ? 'history' : 'hash',
   scrollBehavior() {
     return { x: 0, y: 0 }
   },
@@ -21,21 +24,32 @@ export default new Router({
     },
     {
       path: '/pilot_management',
-      component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/index.vue'),
+      component: () =>
+        import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/index.vue'),
       children: [
         {
           path: '',
           name: 'pilot_roster',
-          component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Roster/index.vue'),
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Roster/index.vue'
+            ),
         },
         {
           path: '/print/:pilotID/:mechID',
-          component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Print/index.vue'),
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Print/index.vue'
+            ),
           props: true,
         },
         {
           path: '/pilot/:pilotID',
-          component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/index.vue'),
+          name: 'pilot-sheet',
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/index.vue'
+            ),
           props: true,
           children: [
             {
@@ -50,27 +64,45 @@ export default new Router({
             },
             {
               path: 'sheet/:tab',
-              component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/layouts/index.vue'),
+              component: () =>
+                import(
+                  /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/layouts/index.vue'
+                ),
               props: true,
             },
             {
               path: 'mech/:mechID',
-              component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/sections/mech/index.vue'),
+              component: () =>
+                import(
+                  /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/PilotSheet/sections/mech/index.vue'
+                ),
               props: true,
-            },
-            {
-              path: 'level',
-              component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Level/index.vue'),
-            },
-            {
-              path: 'active',
-              component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/ActiveSheet/index.vue'),
             },
           ],
         },
         {
+          path: '/active/:pilotID',
+          props: true,
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/ActiveSheet/index.vue'
+            ),
+        },
+        {
+          path: 'level/:pilotID',
+          name: 'level-up',
+          props: true,
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/Level/index.vue'
+            ),
+        },
+        {
           path: '/new',
-          component: () => import(/* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/New/index.vue'),
+          component: () =>
+            import(
+              /* webpackChunkName: "pilotManagement" */ '@/features/pilot_management/New/index.vue'
+            ),
         },
         {
           path: '/compendium',

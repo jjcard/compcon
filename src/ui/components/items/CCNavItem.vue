@@ -4,10 +4,11 @@
     depressed
     :color="selected ? 'white' : 'primary'"
     :class="{
-      'primary--text': selected
+      'primary--text': selected,
     }"
     :to="to"
     :disabled="disabled"
+    @click="to ? '' : $emit('clicked')"
   >
     <span class="unskew">
       <slot />
@@ -19,21 +20,21 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'nav-item',
+  name: 'cc-nav-item',
   props: {
     to: {
       type: String,
-      default: ''
+      default: '',
     },
     selected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 })
 </script>
 

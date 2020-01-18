@@ -4,7 +4,7 @@
       <div
         class="btn-main"
         :class="{
-          disabled,
+          disabled: disabled || loading,
           grey: disabled,
         }"
         @mouseenter="$emit('hover')"
@@ -16,6 +16,7 @@
           <v-icon dark size="50" class="ml-n4 mt-n2">cci-pilot</v-icon>
           <slot />
         </div>
+        <v-progress-linear v-if="loading" absolute bottom color="white" indeterminate />
       </div>
     </div>
   </v-col>
@@ -33,6 +34,10 @@ export default Vue.extend({
       default: '',
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     },
@@ -60,7 +65,7 @@ export default Vue.extend({
   left: 0;
   right: 0;
   height: 5px;
-  background-color: #fff;
+  background-color: var(--v-background-base);
   transform-origin: bottom right;
   transform: scaleX(0);
   transition: transform 0.45s ease;
@@ -92,7 +97,7 @@ export default Vue.extend({
   left: 590px;
   height: 71px;
   width: 12px;
-  background: var(--v-panel-base);
+  background: var(--v-background-base);
   transition: all ease-in-out 0.45s;
   z-index: 4;
 }
@@ -107,7 +112,7 @@ export default Vue.extend({
   left: 590px;
   height: 71px;
   width: 8px;
-  background: var(--v-panel-base);
+  background: var(--v-background-base);
   transition: all ease-in-out 0.45s;
   z-index: 4;
 }

@@ -1,17 +1,17 @@
 <template>
-  <div class="wrapper">
+  <div>
     <cc-nav pilot-management />
-    <v-fade-transition leave-absolute>
-      <router-view />
-    </v-fade-transition>
+    <div class="ma-3">
+      <v-fade-transition leave-absolute>
+        <router-view />
+      </v-fade-transition>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import CCNav from '@/features/nav/index.vue'
-import { getModule } from 'vuex-module-decorators'
-import { PilotManagementStore } from './store'
 
 export default Vue.extend({
   name: 'pilot-management',
@@ -28,10 +28,5 @@ export default Vue.extend({
 
 body {
   overflow: hidden;
-}
-
-.wrapper {
-  display: flex;
-  width: 100%;
 }
 </style>
